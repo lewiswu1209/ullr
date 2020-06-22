@@ -1,5 +1,9 @@
 <?php
   session_start();
+  if ($_SESSION['user_guid']==null) {
+    header("Location: /user/loginForm.php");
+    exit;
+  }
   include("../config/db-creds.inc");
   include("../utils/mysqli_utils.php");
   $stmt = $con->prepare("DELETE FROM `project` WHERE `guid`=?;");

@@ -11,7 +11,7 @@
   <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta charset="utf-8">
-    <title>登录 · XSS Platform</title>
+    <title>注册 · XSS Platform</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -54,13 +54,14 @@
   </head>
   <body>
     <div class="container">
-      <form class="form-signin" action="index.php" method="POST" onsubmit="return checkForm();">
-        <h2 class="form-signin-heading">请登录</h2>
+      <form class="form-signin" action="register.php" method="POST" onsubmit="return checkForm();">
+        <h2 class="form-signin-heading">请注册</h2>
         <input type="text" class="input-block-level" placeholder="请输入用户名" name="username"/>
         <input type="password" class="input-block-level" placeholder="请输入密码" id="password"/>
         <input type="hidden" class="input-block-level" placeholder="请输入密码" id="md5_password" name="password"/>
-        <button class="btn btn-large btn-primary" type="submit">登录</button>
-        <a href="registerForm.php" class="btn btn-large btn-primary pull-right">注册</a>
+        <input type="text" class="input-block-level" placeholder="请输入邀请码" name="invite_code"/>
+        <button class="btn btn-large btn-primary" type="submit">注册</button>
+        <button class="btn btn-large btn-primary pull-right" type="reset">重置</button>
       </form>
     </div> <!-- /container -->
 
