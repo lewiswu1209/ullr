@@ -1,6 +1,6 @@
         <div class="masthead">
           <ul class="nav nav-pills pull-right">
-            <li><a href="createForm.php">添加项目</a></li>
+            <li><a href="create.php">添加项目</a></li>
             <li class="dropdown">
               <a class="dropdown-toggle" data-toggle="dropdown" href="#"><?php echo $_SESSION['nickname'] ?><b class="caret"></b></a>
               <ul class="dropdown-menu">

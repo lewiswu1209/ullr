@@ -1,9 +1,31 @@
 <?php
   session_start();
-
+  $error_flag = false;
+  include("../config/db-creds.inc");
+  include("../utils/mysqli_utils.php");
+  
   if ($_SESSION['user_guid']!=null) {
     header("Location: /project/index.php");
     exit;
+  }
+  
+  if ( !empty($_POST["username"]) && !empty($_POST["password"]) ) {
+    $stmt = $con->prepare("SELECT guid, username, nickname FROM user WHERE username = ? and password = md5(concat(?,guid));");
+    $username = $_POST["username"];
+    $password = $_POST["password"];
+    $stmt->bind_param("ss", $username, $password);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if (!empty($result) && mysqli_num_rows($result) != 0) {
+      while ($row = $result->fetch_array()) {
+        $_SESSION['nickname'] = $row['nickname'];
+        $_SESSION['user_guid'] = $row['guid'];
+        header("Location: /project/index.php");
+      }
+    } else {
+      $error_flag = true;
+    }
   }
 ?>
 <!DOCTYPE html>
@@ -54,13 +76,16 @@
   </head>
   <body>
     <div class="container">
-      <form class="form-signin" action="index.php" method="POST" onsubmit="return checkForm();">
+      <form class="form-signin" action="login.php" method="POST" onsubmit="return checkForm();">
         <h2 class="form-signin-heading">请登录</h2>
+        <div style="<?php echo $error_flag?"display:display":"display:none" ?>" class="alert">
+          <p class="text-success">不好意思<strong></strong>，你是不是记错用户名密码啦？</p>
+        </div>
         <input type="text" class="input-block-level" placeholder="请输入用户名" name="username"/>
         <input type="password" class="input-block-level" placeholder="请输入密码" id="password"/>
         <input type="hidden" class="input-block-level" placeholder="请输入密码" id="md5_password" name="password"/>
         <button class="btn btn-large btn-primary" type="submit">登录</button>
-        <a href="registerForm.php" class="btn btn-large btn-primary pull-right">注册</a>
+        <a href="register.php" class="btn btn-large btn-primary pull-right">注册</a>
       </form>
     </div> <!-- /container -->
 

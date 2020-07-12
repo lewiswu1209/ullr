@@ -3,9 +3,44 @@
   include("../config/db-creds.inc");
   include("../utils/mysqli_utils.php");
   include("../utils/guid_utils.inc");
+  
+  if ($_SESSION['user_guid']!=null) {
+    header("Location: /project/index.php");
+    exit;
+  }
+  
   $username = htmlspecialchars(trim($_POST["username"]),ENT_QUOTES);
   $password = htmlspecialchars(trim($_POST["password"]),ENT_QUOTES);
   $invite_code = htmlspecialchars(trim($_POST["invite_code"]),ENT_QUOTES);
+  
+  $error_msg = "";
+  
+  if ( !empty($_POST["username"]) && !empty($_POST["password"])  && !empty($_POST["invite_code"]) ) {
+    if( preg_match('/^[A-Za-z0-9_]{6,20}$/u', $username) ) {
+      if( preg_match('/^[a-z0-9-]{36}$/u', $invite_code) ) {
+        $stmt = $con->prepare("SELECT * FROM `invite` WHERE `code`=?;");
+        $stmt->bind_param("s", $invite_code);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if (!empty($result) && mysqli_num_rows($result) != 0) {
+          $stmt = $con->prepare("INSERT INTO `user` (`guid`, `username`, `password`, `nickname`) VALUES (?, ?, md5(concat(?,guid)), ?);");
+          $stmt->bind_param("ssss", create_guid(), $username, $password, $username);
+          $stmt->execute();
+          $result = $stmt->get_result();
+          header("Location: /user/login.php");
+          exit;
+        } else {
+          $error_msg = "验证码不正确，你是不抄错啦？脑子不好就复制粘贴吧~";
+        }
+      } else {
+        $error_msg = "验证码格式不正确";
+      }
+    } else {
+      $error_msg = "用户名由大小写字母、数字、下划线组成";
+    }
+  } else {
+    $error_msg = "请输入用户名、密码和邀请码";
+  }
 ?>
 <!DOCTYPE html>
 <html>
@@ -17,104 +52,57 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <!-- CSS -->
+    <!-- Le styles -->
     <link href="../assets/css/bootstrap.css" rel="stylesheet">
     <style type="text/css">
-      /* Sticky footer styles
-      -------------------------------------------------- */
-
-      html,
       body {
-        height: 100%;
-        /* The html and body elements cannot have any padding or margin. */
-      }
-
-      /* Wrapper for page content to push down footer */
-      #wrap {
-        min-height: 100%;
-        height: auto !important;
-        height: 100%;
-        /* Negative indent footer by it's height */
-        margin: 0 auto -60px;
-      }
-
-      /* Set the fixed height of the footer here */
-      #push,
-      #footer {
-        height: 60px;
-      }
-      #footer {
+        padding-top: 40px;
+        padding-bottom: 40px;
         background-color: #f5f5f5;
       }
 
-      /* Lastly, apply responsive CSS fixes as necessary */
-      @media (max-width: 767px) {
-        #footer {
-          margin-left: -20px;
-          margin-right: -20px;
-          padding-left: 20px;
-          padding-right: 20px;
-        }
+      .form-signin {
+        max-width: 300px;
+        padding: 19px 29px 29px;
+        margin: 0 auto 20px;
+        background-color: #fff;
+        border: 1px solid #e5e5e5;
+        -webkit-border-radius: 5px;
+           -moz-border-radius: 5px;
+                border-radius: 5px;
+        -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+           -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+                box-shadow: 0 1px 2px rgba(0,0,0,.05);
       }
-
-      /* Custom page CSS
-      -------------------------------------------------- */
-      /* Not required for template or sticky footer method. */
-
-      .container {
-        width: auto;
-        max-width: 680px;
+      .form-signin .form-signin-heading,
+      .form-signin .checkbox {
+        margin-bottom: 10px;
       }
-      .container .credit {
-        margin: 20px 0;
+      .form-signin input[type="text"],
+      .form-signin input[type="password"] {
+        font-size: 16px;
+        height: auto;
+        margin-bottom: 15px;
+        padding: 7px 9px;
       }
     </style>
     <link href="../assets/css/bootstrap-responsive.css" rel="stylesheet">
   </head>
   <body>
-    <!-- Part 1: Wrap all page content here -->
-    <div id="wrap">
-      <!-- Begin page content -->
-      <div class="container">
-        <div class="page-header">
-          <h1>提示</h1>
+    <div class="container">
+      <form class="form-signin" action="register.php" method="POST" onsubmit="return checkForm();">
+        <h2 class="form-signin-heading">请注册</h2>
+        <div class="alert">
+          <p class="text-success"><?php echo $error_msg; ?></p>
         </div>
-        <?php
-        if(preg_match('/^[A-Za-z0-9_]{6,20}$/u',$username)) {
-          $stmt = $con->prepare("SELECT * FROM `invite` WHERE `code`=?;");
-          $stmt->bind_param("s", $invite_code);
-          $stmt->execute();
-          $result = $stmt->get_result();
-          if (!empty($result) && mysqli_num_rows($result) != 0) {
-            $stmt = $con->prepare("INSERT INTO `user` (`guid`, `username`, `password`, `nickname`) VALUES (?, ?, md5(concat(?,guid)), ?);");
-            $stmt->bind_param("ssss", create_guid(), $username, $password, $username);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            echo '<div class="alert">';
-            echo '  <p class="text-success">注册成功<strong></strong>，登录试试。</p>';
-            echo '</div>';
-            echo '<p>点击<a href="../user/loginForm.php">这里</a>去登陆~</p>';
-          } else {
-            echo '<div class="alert">';
-            echo '  <p class="text-success">不好意思<strong></strong>，邀请码是不抄错啦？</p>';
-            echo '</div>';
-            echo '<p>点击<a href="../user/registerForm.php">这里</a>再试试~</p>';
-          }
-        }else{
-          echo '<div class="alert">';
-          echo '  <p class="text-success">不好意思<strong></strong>，用户名应当由6~20位字母、数字、下划线组成。</p>';
-          echo '</div>';
-          echo '<p>点击<a href="../user/registerForm.php">这里</a>再试试~</p>';
-        }
-        ?>
-      </div>
-      <div id="push"></div>
-    </div>
-    <div id="footer">
-      <div class="container">
-        <p class="muted credit">注意：未获授权的安全测试将承担法律责任，请只在获得授权的情况下使用本工具。</p>
-      </div>
-    </div>
+        <input type="text" class="input-block-level" placeholder="请输入用户名" name="username"/>
+        <input type="password" class="input-block-level" placeholder="请输入密码" id="password"/>
+        <input type="hidden" class="input-block-level" placeholder="请输入密码" id="md5_password" name="password"/>
+        <input type="text" class="input-block-level" placeholder="请输入邀请码" name="invite_code"/>
+        <button class="btn btn-large btn-primary" type="submit">注册</button>
+        <button class="btn btn-large btn-primary pull-right" type="reset">重置</button>
+      </form>
+    </div> <!-- /container -->
 
     <!-- Le javascript
     ================================================== -->
@@ -132,5 +120,14 @@
     <script src="../assets/js/bootstrap-collapse.js"></script>
     <script src="../assets/js/bootstrap-carousel.js"></script>
     <script src="../assets/js/bootstrap-typeahead.js"></script>
+    <script src="../assets/js/md5.js"></script>
+    <script>
+      function checkForm(){
+        var password= document.getElementById('password');
+        var md5_pwd= document.getElementById('md5_password');
+        md5_pwd.value= md5(password.value);
+        return ture;
+      }
+    </script>
   </body>
 </html>

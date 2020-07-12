@@ -17,7 +17,7 @@
       }
     }
   } else {
-    header("Location: /user/loginForm.php");
+    header("Location: /user/login.php");
   }
 ?>
 

@@ -1,7 +1,7 @@
 <?php
   session_start();
   if ($_SESSION['user_guid']==null) {
-    header("Location: /user/loginForm.php");
+    header("Location: /user/login.php");
     exit;
   }
   include("../config/db-creds.inc");
