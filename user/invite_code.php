@@ -12,9 +12,9 @@
   $invite_code = create_guid();
 
   include("../utils/mysqli_utils.php");
-  $stmt = $con->prepare("INSERT INTO `invite` (`code`) VALUES (?);");
+  $stmt = $con->prepare("INSERT INTO `invite` (`code`,`inviter`) VALUES (?,?);");
   
-  $stmt->bind_param("s", $invite_code);
+  $stmt->bind_param("ss", $invite_code, $_SESSION['user_guid']);
   $stmt->execute();
 ?>
 <!DOCTYPE html>

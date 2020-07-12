@@ -23,10 +23,14 @@
         $stmt->execute();
         $result = $stmt->get_result();
         if (!empty($result) && mysqli_num_rows($result) != 0) {
+          $guid = create_guid();
           $stmt = $con->prepare("INSERT INTO `user` (`guid`, `username`, `password`, `nickname`) VALUES (?, ?, md5(concat(?,guid)), ?);");
-          $stmt->bind_param("ssss", create_guid(), $username, $password, $username);
+          $stmt->bind_param("ssss", $guid, $username, $password, $username);
           $stmt->execute();
-          $result = $stmt->get_result();
+          
+          $stmt = $con->prepare("UPDATE `invite` SET `invitee` = ? WHERE `invite`.`code` = ?;");
+          $stmt->bind_param("ss", $guid, $invite_code);
+          $stmt->execute();
           header("Location: /user/login.php");
           exit;
         } else {
