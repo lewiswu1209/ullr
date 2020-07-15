@@ -97,9 +97,9 @@
             while ($row = $result->fetch_array()) {
         ?>
             <div>注入如下代码：</div>
-            <pre class="well well-large"><?php echo $xsssite."?id=".$row['guid']; ?></pre>
+            <pre class="well well-large"><?php echo $xss_host."/?id=".$row['guid']; ?></pre>
             <div>如果管理员配置了rewrite，也可以如下使用：</div>
-            <pre class="well well-large"><?php echo $xsssite.$row['guid']; ?></pre>
+            <pre class="well well-large"><?php echo $xss_host."/".$row['guid']; ?></pre>
             <div>Payload:</div>
             <pre class="well well-large"><?php echo $row['payload']; ?></pre>
         <?php

@@ -12,7 +12,7 @@
     if (!empty($result) && mysqli_num_rows($result) != 0) {
       while ($row = $result->fetch_array()) {
         $payload = str_replace("{projectId}", $_GET['id'], $row['payload']);
-        $payload = str_replace("{xsssite}", $xsssite, $payload);
+        $payload = str_replace("{host}", $https_url, $payload);
         echo htmlspecialchars_decode($payload, ENT_QUOTES);
       }
     }

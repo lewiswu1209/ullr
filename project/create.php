@@ -108,7 +108,16 @@
         <div class="control-group">
           <label class="control-label" for="code">自定义代码</label>
           <div class="controls">
-            <textarea id="code" name="code" class="span6" rows="10"></textarea>
+            <textarea id="code" name="code" class="span6" rows="10" placeholder="如果要使用自定义代码，在上边选择不添加内置模块选项，然后在这里录入代码。"></textarea>
+          </div>
+        </div>
+        <div class="control-group">
+          <div class="controls">
+            <p class="muted"><span class="badge badge-info">1</span> payload中使用{projectId}代替项目ID.</p>
+            <p class="muted"><span class="badge badge-info">2</span> payload中使用{host}代替回传的站点.</p>
+            <p class="muted"><span class="badge badge-info">3</span> 数据回传至postback.php.</p>
+            <p class="muted"><span class="badge badge-info">4</span> 使用GET回传至postback.php的参数均会被接收.</p>
+            <p class="muted"><span class="badge badge-info">5</span> 例如{host}/postback.php?id={projectId}&param=value.</p>
           </div>
         </div>
         <div class="control-group">
