@@ -16,7 +16,7 @@
   $error_msg = "";
   
   if ( !empty($_POST["username"]) && !empty($_POST["password"])  && !empty($_POST["invite_code"]) ) {
-    if( preg_match('/^[A-Za-z0-9_]{6,20}$/u', $username) ) {
+    if( preg_match('/^[A-Za-z0-9_]{5,20}$/u', $username) ) {
       if( preg_match('/^[a-z0-9-]{36}$/u', $invite_code) ) {
         $stmt = $con->prepare("SELECT * FROM `invite` WHERE `code`=?;");
         $stmt->bind_param("s", $invite_code);
@@ -26,13 +26,15 @@
           $guid = create_guid();
           $stmt = $con->prepare("INSERT INTO `user` (`guid`, `username`, `password`, `nickname`) VALUES (?, ?, md5(concat(?,guid)), ?);");
           $stmt->bind_param("ssss", $guid, $username, $password, $username);
-          $stmt->execute();
-          
-          $stmt = $con->prepare("UPDATE `invite` SET `invitee` = ? WHERE `invite`.`code` = ?;");
-          $stmt->bind_param("ss", $guid, $invite_code);
-          $stmt->execute();
-          header("Location: /user/login.php");
-          exit;
+          if ($stmt->execute() ) {
+            $stmt = $con->prepare("UPDATE `invite` SET `invitee` = ? WHERE `invite`.`code` = ?;");
+            $stmt->bind_param("ss", $guid, $invite_code);
+            $stmt->execute();
+            header("Location: /user/login.php");
+            exit;
+          } else {
+            $error_msg = "用户名重复~";
+          }
         } else {
           $error_msg = "验证码不正确，你是不抄错啦？脑子不好就复制粘贴吧~";
         }
@@ -40,7 +42,7 @@
         $error_msg = "验证码格式不正确";
       }
     } else {
-      $error_msg = "用户名由大小写字母、数字、下划线组成";
+      $error_msg = "用户名由5位以上大小写字母、数字、下划线组成";
     }
   } else {
     $error_msg = "请输入用户名、密码和邀请码";
