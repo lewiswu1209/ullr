@@ -1,49 +1,25 @@
 <?php
   session_start();
-  include("../config/db-creds.inc");
-  include("../utils/mysqli_utils.php");
-  include("../utils/guid_utils.inc");
   
-  if ($_SESSION['user_guid']!=null) {
-    header("Location: /project/index.php");
+  if ($_SESSION['user_guid']==null) {
+    header("Location: /user/login.php");
     exit;
   }
   
-  $username = htmlspecialchars(trim($_POST["username"]),ENT_QUOTES);
+  include("../config/db-creds.inc");
+  include("../utils/mysqli_utils.php");
+  
+  $guid= $_SESSION['user_guid'];
+  $old = htmlspecialchars(trim($_POST["old"]),ENT_QUOTES);
   $password = htmlspecialchars(trim($_POST["password"]),ENT_QUOTES);
-  $invite_code = htmlspecialchars(trim($_POST["invite_code"]),ENT_QUOTES);
   
-  $error_msg = "";
-  
-  if ( !empty($_POST["username"]) && !empty($_POST["password"])  && !empty($_POST["invite_code"]) ) {
-    if( preg_match('/^[A-Za-z0-9_]{6,20}$/u', $username) ) {
-      if( preg_match('/^[a-z0-9-]{36}$/u', $invite_code) ) {
-        $stmt = $con->prepare("SELECT * FROM `invite` WHERE `code`=?;");
-        $stmt->bind_param("s", $invite_code);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        if (!empty($result) && mysqli_num_rows($result) != 0) {
-          $guid = create_guid();
-          $stmt = $con->prepare("INSERT INTO `user` (`guid`, `username`, `password`, `nickname`) VALUES (?, ?, md5(concat(?,guid)), ?);");
-          $stmt->bind_param("ssss", $guid, $username, $password, $username);
-          $stmt->execute();
-          
-          $stmt = $con->prepare("UPDATE `invite` SET `invitee` = ? WHERE `invite`.`code` = ?;");
-          $stmt->bind_param("ss", $guid, $invite_code);
-          $stmt->execute();
-          header("Location: /user/login.php");
-          exit;
-        } else {
-          $error_msg = "验证码不正确，你是不抄错啦？脑子不好就复制粘贴吧~";
-        }
-      } else {
-        $error_msg = "验证码格式不正确";
-      }
-    } else {
-      $error_msg = "用户名由大小写字母、数字、下划线组成";
-    }
-  } else {
-    $error_msg = "请输入用户名、密码和邀请码";
+  if ( !empty($_POST["old"]) && !empty($_POST["password"]) ) {
+    $stmt = $con->prepare("update `user` set `password`=md5(concat(?,?)) where `guid`=? and`password`=md5(concat(?,?));");
+    $stmt->bind_param("sssss", $password, $guid, $guid, $old, $guid);
+    $stmt->execute();
+    
+    header("Location: /user/logout.php");
+    exit;
   }
 ?>
 <!DOCTYPE html>
@@ -51,7 +27,7 @@
   <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta charset="utf-8">
-    <title>注册 · XSS Platform</title>
+    <title>修改密码 · XSS Platform</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -94,16 +70,13 @@
   </head>
   <body>
     <div class="container">
-      <form class="form-signin" action="register.php" method="POST" onsubmit="return checkForm();">
-        <h2 class="form-signin-heading">请注册</h2>
-        <div class="alert">
-          <p class="text-success"><?php echo $error_msg; ?></p>
-        </div>
-        <input type="text" class="input-block-level" placeholder="请输入用户名" name="username"/>
-        <input type="password" class="input-block-level" placeholder="请输入密码" id="password"/>
-        <input type="hidden" class="input-block-level" placeholder="请输入密码" id="md5_password" name="password"/>
-        <input type="text" class="input-block-level" placeholder="请输入邀请码" name="invite_code"/>
-        <button class="btn btn-large btn-primary" type="submit">注册</button>
+      <form class="form-signin" action="changePasswd.php" method="POST" onsubmit="return checkForm();">
+        <h2 class="form-signin-heading">修改密码</h2>
+        <input type="password" class="input-block-level" placeholder="请输入原密码" id="old"/>
+        <input type="hidden" class="input-block-level" placeholder="请输入原密码" id="md5_old" name="old"/>
+        <input type="password" class="input-block-level" placeholder="请输入新密码" id="password"/>
+        <input type="hidden" class="input-block-level" placeholder="请输入新密码" id="md5_password" name="password"/>
+        <button class="btn btn-large btn-primary" type="submit">确定</button>
         <button class="btn btn-large btn-primary pull-right" type="reset">重置</button>
       </form>
     </div> <!-- /container -->
@@ -127,9 +100,14 @@
     <script src="../assets/js/md5.js"></script>
     <script>
       function checkForm(){
+        var old= document.getElementById('old');
+        var md5_old= document.getElementById('md5_old');
+
         var password= document.getElementById('password');
         var md5_pwd= document.getElementById('md5_password');
+        
         md5_pwd.value= md5(password.value);
+        md5_old.value= md5(old.value);
         return true;
       }
     </script>

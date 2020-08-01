@@ -5,7 +5,7 @@
               <a class="dropdown-toggle" data-toggle="dropdown" href="#"><?php echo $_SESSION['nickname'] ?><b class="caret"></b></a>
               <ul class="dropdown-menu">
                 <li><a tabindex="-1" href="../user/invite_code.php">生成邀请码</a></li>
-                <li><a tabindex="-1" href="#">修改密码</a></li>
+                <li><a tabindex="-1" href="../user/changePasswd.php">修改密码</a></li>
                 <li><a tabindex="-1" href="../user/logout.php">退出</a></li>
               </ul>
             </li>
