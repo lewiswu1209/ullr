@@ -108,8 +108,9 @@ CREATE TABLE `user` (
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`guid`, `username`, `password`, `nickname`) VALUES
-('7032c695-f961-4144-b17c-2edc979cc5da', 'root', 'ce6b6d181bfd4d5842ff79c8bf27bd08', '盘古大帝');
+set @root_uuid=uuid();
+
+INSERT INTO `user` (`guid`, `username`, `password`, `nickname`) VALUES (@root_uuid, 'root', md5(concat(md5('toor'),@root_uuid)), '盘古大帝');
 
 --
 -- Indexes for dumped tables

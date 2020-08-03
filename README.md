@@ -14,7 +14,7 @@
 
 3、登录mysql，创建数据库：
 
->CREATE DATABASE `xss-platform` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;
+>CREATE DATABASE \`xss-platform\` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;
 
 4、数据库在sql文件中:
 
@@ -22,9 +22,9 @@
 
 5、有些参数需要简单配置一下：
 
-    +在config/db-creds.inc配置数据库参数
+    +复制config/db-creds.inc.example到config/db-creds.inc并配置数据库链接参数
     
-    +在config/config.inc配置你的站点的Url
+    +复制config/config.inc.example到config/config.inc并配置站点域名
     
 6、开启url rewrite
 
