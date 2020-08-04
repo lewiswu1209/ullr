@@ -9,7 +9,7 @@
   include("../config/db-creds.inc");
   include("../utils/mysqli_utils.php");
   
-  $stmt = $con->prepare("SELECT s.`project_name` as s_name, s.`timestamp` as `timestamp`, ip_addr, content, headers FROM `project` s, `result` r WHERE s.`guid`=r.`project_guid` and `user_guid`= ? and s.`guid`=?");
+  $stmt = $con->prepare("SELECT s.`project_name` as s_name, r.`timestamp` as `timestamp`, ip_addr, content, headers FROM `project` s, `result` r WHERE s.`guid`=r.`project_guid` and `user_guid`= ? and s.`guid`=?");
   $stmt->bind_param("ss", $_SESSION['user_guid'], $_GET['id']);
   $stmt->execute();
   $result = $stmt->get_result();
