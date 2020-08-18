@@ -8,7 +8,7 @@
 
   $stmt = $con->prepare("INSERT INTO `result` (`guid`, `project_guid`, `ip_addr`, `content`, `headers`) VALUES (?, ?, ?, ?, ?);");
   $guid = create_guid();
-  $project_guid = $_GET['id'];
+  $project_guid = $_REQUEST['id'];
   $ip = getip();
   $content = '';
   foreach ($_REQUEST as $name => $value) {
