@@ -4,7 +4,7 @@
   include("../config/db-creds.inc");
   include("../utils/mysqli_utils.php");
   
-  if ($_SESSION['user_guid']!=null) {
+  if (isset($_SESSION['user_guid'])) {
     header("Location: /project/index.php");
     exit;
   }

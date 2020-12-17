@@ -1,7 +1,7 @@
 <?php
   session_start();
 
-  if ($_SESSION['user_guid']==null) {
+  if (!isset($_SESSION['user_guid'])) {
     header("Location: /user/login.php");
     exit;
   }

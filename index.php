@@ -1,5 +1,5 @@
 <?php
-  if ($_GET['id']) {
+  if (isset($_GET['id'])) {
     header('Content-Type: text/javascript; charset=utf-8');
     include("config/config.inc");
     include("config/db-creds.inc");

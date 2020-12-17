@@ -4,7 +4,7 @@
   include("../utils/mysqli_utils.php");
   include("../utils/guid_utils.inc");
   
-  if ($_SESSION['user_guid']!=null) {
+  if (isset($_SESSION['user_guid'])) {
     header("Location: /project/index.php");
     exit;
   }
