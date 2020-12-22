@@ -111,7 +111,7 @@
         var password= document.getElementById('password');
         var md5_pwd= document.getElementById('md5_password');
         md5_pwd.value= md5(password.value);
-        return ture;
+        return true;
       }
     </script>
   </body>

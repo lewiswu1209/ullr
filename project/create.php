@@ -12,9 +12,9 @@
   
   $project_name = htmlspecialchars($_POST["title"], ENT_QUOTES);
   if ($_POST["module"]=="") {
-    $payload = htmlspecialchars($_POST["code"], ENT_QUOTES);
+    $payload = htmlspecialchars(base64_decode($_POST["code"]), ENT_QUOTES);
   } else {
-    $payload = htmlspecialchars($_POST["module"], ENT_QUOTES);
+    $payload = htmlspecialchars(base64_decode($_POST["module"]), ENT_QUOTES);
   }
 
   if ( !empty($project_name) && !empty($payload) ) {
@@ -78,7 +78,7 @@
   </head>
   <body>
     <div class="container">
-      <form class="form-signin form-horizontal" action="create.php" method="POST">
+      <form class="form-signin form-horizontal" action="create.php" method="POST"  onsubmit="return checkForm();">
         <h2 class="form-signin-heading"><center>添加项目</center></h2>
         <div class="control-group">
           <label class="control-label" for="title">项目标题</label>
@@ -89,7 +89,7 @@
         <div class="control-group">
           <label class="control-label" for="module">选择模块</label>
           <div class="controls">
-            <select id="module" name="module">
+            <select id="module">
               <option value="">不添加内置模块</option>
             <?php
               if (!empty($result) && mysqli_num_rows($result) != 0) {
@@ -103,12 +103,14 @@
               }
             ?>
             </select>
+            <textarea id="base64_module" name="module" style="display:none;" class="span6" rows="10" placeholder="如果要使用自定义代码，在上边选择不添加内置模块选项，然后在这里录入代码。"></textarea>
           </div>
         </div>
         <div class="control-group">
           <label class="control-label" for="code">自定义代码</label>
           <div class="controls">
-            <textarea id="code" name="code" class="span6" rows="10" placeholder="如果要使用自定义代码，在上边选择不添加内置模块选项，然后在这里录入代码。"></textarea>
+            <textarea id="code" class="span6" rows="10" placeholder="如果要使用自定义代码，在上边选择不添加内置模块选项，然后在这里录入代码。"></textarea>
+            <textarea id="base64_code" name="code" class="span6" style="display:none;" rows="10" placeholder="如果要使用自定义代码，在上边选择不添加内置模块选项，然后在这里录入代码。"></textarea>
           </div>
         </div>
         <div class="control-group">
@@ -144,5 +146,17 @@
     <script src="../assets/js/bootstrap-collapse.js"></script>
     <script src="../assets/js/bootstrap-carousel.js"></script>
     <script src="../assets/js/bootstrap-typeahead.js"></script>
+    <script src="../assets/js/base64.js"></script>
+    <script>
+      function checkForm(){
+        var module = document.getElementById('module');
+        var b64_m= document.getElementById('base64_module');
+        b64_m.value= Base64.encode(module.value);
+        var code = document.getElementById('code');
+        var b64_code= document.getElementById('base64_code');
+        b64_code.value= Base64.encode(code.value);
+        return true;
+      }
+    </script>
   </body>
 </html>
