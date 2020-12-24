@@ -20,6 +20,8 @@
   foreach (getallheaders() as $name => $value) {
     $headers = $headers."$name: $value<br/>";
   }
-  $stmt->bind_param("sssss", $guid, $project_guid, $ip, htmlspecialchars($content, ENT_QUOTES), htmlspecialchars($headers, ENT_QUOTES));
+  $content = htmlspecialchars($content, ENT_QUOTES);
+  $headers = htmlspecialchars($headers, ENT_QUOTES);
+  $stmt->bind_param("sssss", $guid, $project_guid, $ip, $content, $headers);
   $stmt->execute();
 ?>
