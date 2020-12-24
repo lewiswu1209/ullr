@@ -10,11 +10,15 @@
   include("../utils/url_utils.inc");
   include("../utils/guid_utils.inc");
   
-  $project_name = htmlspecialchars($_POST["title"], ENT_QUOTES);
-  if ($_POST["module"]=="") {
-    $payload = htmlspecialchars(base64_decode($_POST["code"]), ENT_QUOTES);
-  } else {
-    $payload = htmlspecialchars(base64_decode($_POST["module"]), ENT_QUOTES);
+  if (isset($_POST["title"])) {
+    $project_name = htmlspecialchars($_POST["title"], ENT_QUOTES);
+    if (!empty($_POST["module"])) {
+      $payload = htmlspecialchars(base64_decode($_POST["module"]), ENT_QUOTES);
+    } else {
+       if (isset($_POST["code"])) {
+         $payload = htmlspecialchars(base64_decode($_POST["code"]), ENT_QUOTES);
+       }
+    }
   }
 
   if ( !empty($project_name) && !empty($payload) ) {
